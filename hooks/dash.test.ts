@@ -1,5 +1,5 @@
 import { expect, test } from 'claude-code/testing'
-import { bar, pct, rowsFor, top, shorten } from './dash'
+import { bar, clip, pct, rowsFor, top, shorten } from './dash'
 
 test('dashboard: a bar always adds up to its width and shows a tiny share', () => {
   const b = bar(0.001, 10)
@@ -27,4 +27,10 @@ test('dashboard: top items and shortened paths', () => {
   expect(t.shown.map(i => i.name)).toEqual(['b', 'c'])
   expect(t.more).toBe(1)
   expect(shorten('/very/long/path/CLAUDE.md', 12).endsWith('CLAUDE.md')).toBe(true)
+})
+
+test('dashboard: clip keeps the start and never exceeds the width', () => {
+  expect(clip('mcp__server__tool_name', 10)).toBe('mcp__serv…')
+  expect(clip('short', 10)).toBe('short')
+  expect(clip('abc', 0)).toBe('')
 })

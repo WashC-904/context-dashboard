@@ -33,3 +33,8 @@ export function top(items: readonly DashItem[], n: number): { shown: DashItem[];
 export function shorten(s: string, max: number): string {
   return s.length <= max ? s : '…' + s.slice(s.length - (max - 1))
 }
+
+/** `s` cut to `max` cells, keeping its start (names), where `shorten` keeps its end (paths). */
+export function clip(s: string, max: number): string {
+  return s.length <= max ? s : max <= 1 ? s.slice(0, Math.max(0, max)) : s.slice(0, max - 1) + '…'
+}

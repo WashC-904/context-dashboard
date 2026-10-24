@@ -1,7 +1,7 @@
 import type { Register, SessionUsage } from 'claude-code'
 
 import type { DashData } from '../types'
-import { bar, fmt, pct, rowsFor, shorten, top } from './dash'
+import { bar, clip, fmt, pct, rowsFor, shorten, top } from './dash'
 
 const PANE = 'context-dashboard'
 
@@ -51,7 +51,10 @@ export const register: Register = on => {
     const cols = Math.max(30, e.props.bodyColumns)
     const wide = cols - 2
     const total = bar(d.max > 0 ? d.used / d.max : 0, wide)
-    const catBar = Math.max(8, Math.min(24, cols - 46))
+    // A category row is: marker 2, name, gap 1, bar, gap 1, tokens 6, gap 1, percent 4.
+    const nameW = Math.min(22, Math.max(10, cols - 15 - 8))
+    const catBar = Math.max(0, Math.min(24, cols - 15 - nameW))
+    const mcpNameW = Math.min(28, Math.floor((cols - 8) / 2))
     const mcp = top(d.mcp, 5)
     const mem = top(d.memory, 5)
 
@@ -74,11 +77,11 @@ export const register: Register = on => {
           const b = bar(d.max > 0 ? c.tokens / d.max : 0, catBar)
           const isUsed = c.kind === 'used'
           return (
-            <Text key={c.name}>
+            <Text key={c.name} wrap="truncate-end">
               <Text color={c.color}>{isUsed ? '●' : '○'} </Text>
-              {c.name.padEnd(22)}
+              {clip(c.name, nameW).padEnd(nameW)}
               <Text color={c.color} dimColor={!isUsed}>{b.filled}</Text>
-              <Text dimColor>{b.rest} {fmt(c.tokens).padStart(6)} {pct(c.tokens, d.max).padStart(4)}</Text>
+              <Text dimColor>{b.rest}{catBar > 0 ? ' ' : ''}{fmt(c.tokens).padStart(6)} {pct(c.tokens, d.max).padStart(4)}</Text>
             </Text>
           )
         })}
@@ -87,7 +90,7 @@ export const register: Register = on => {
             <Text> </Text>
             <Text bold>Memory files</Text>
             {mem.shown.map(m => (
-              <Text key={m.name} dimColor>
+              <Text key={m.name} dimColor wrap="truncate-end">
                 {fmt(m.tokens).padStart(6)}  {shorten(m.name, cols - 12)}
               </Text>
             ))}
@@ -99,8 +102,8 @@ export const register: Register = on => {
             <Text> </Text>
             <Text bold>Largest MCP tools</Text>
             {mcp.shown.map(t => (
-              <Text key={t.name + t.detail} dimColor>
-                {fmt(t.tokens).padStart(6)}  {shorten(t.name, 28)} <Text dimColor>{shorten(t.detail, cols - 40)}</Text>
+              <Text key={t.name + t.detail} dimColor wrap="truncate-end">
+                {fmt(t.tokens).padStart(6)}  {clip(t.name, mcpNameW)} <Text dimColor>{clip(t.detail, Math.max(0, cols - 9 - mcpNameW))}</Text>
               </Text>
             ))}
             {mcp.more > 0 && <Text dimColor>        and {mcp.more} more</Text>}
