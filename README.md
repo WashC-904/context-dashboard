@@ -33,3 +33,7 @@ Type `/context-dashboard`. Close the pane with its close mark.
 ## How it works
 
 Hooks `session.start` and `turn.complete` read `$.session.usage({ breakdown: 'summary' })` and keep the result in the mod's own state; a `ui.render` hook draws the pane from it. Everything is in `hooks/register.tsx` and `hooks/dash.ts`.
+
+## Licence
+
+MIT, Copyright (c) 2026 Norstride, Inc. See [LICENSE](LICENSE).
