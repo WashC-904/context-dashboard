@@ -1,0 +1,1 @@
+{ "name": "context-dashboard", "version": "0.1.0", "description": "Context Dashboard: a pane that breaks your context window down by category, with the biggest memory files, MCP tools and skills. Open with /context-dashboard.", "types": "./types/index.d.ts" }

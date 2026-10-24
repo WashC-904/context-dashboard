@@ -1,0 +1,5 @@
+{
+  "name": "context-dashboard",
+  "owner": { "name": "WashC-904" },
+  "plugins": [{ "name": "context-dashboard", "source": "./" }]
+}
