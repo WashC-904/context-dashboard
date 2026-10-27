@@ -77,12 +77,28 @@ export const register: Register = on => {
           const b = bar(d.max > 0 ? c.tokens / d.max : 0, catBar)
           const isUsed = c.kind === 'used'
           return (
-            <Text key={c.name} wrap="truncate-end">
-              <Text color={c.color}>{isUsed ? '●' : '○'} </Text>
-              {clip(c.name, nameW).padEnd(nameW)}
-              <Text color={c.color} dimColor={!isUsed}>{b.filled}</Text>
-              <Text dimColor>{b.rest}{catBar > 0 ? ' ' : ''}{fmt(c.tokens).padStart(6)} {pct(c.tokens, d.max).padStart(4)}</Text>
-            </Text>
+            <Box key={c.name}>
+              <Box width={2} flexShrink={0}>
+                <Text color={c.color}>{isUsed ? '●' : '○'}</Text>
+              </Box>
+              <Box width={nameW} flexShrink={0}>
+                <Text wrap="truncate-end">{clip(c.name, nameW)}</Text>
+              </Box>
+              {catBar > 0 && (
+                <Box width={catBar + 1} flexShrink={0}>
+                  <Text>
+                    <Text color={c.color} dimColor={!isUsed}>{b.filled}</Text>
+                    <Text dimColor>{b.rest}</Text>
+                  </Text>
+                </Box>
+              )}
+              <Box width={7} flexShrink={0} justifyContent="flex-end">
+                <Text dimColor>{fmt(c.tokens)}</Text>
+              </Box>
+              <Box width={5} flexShrink={0} justifyContent="flex-end">
+                <Text dimColor>{pct(c.tokens, d.max)}</Text>
+              </Box>
+            </Box>
           )
         })}
         {mem.shown.length > 0 && (
